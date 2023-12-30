@@ -1,0 +1,71 @@
+/* データモデリング1 課題1 */
+
+
+// 単品マスタ
+Table M_TANPIN_MENU {
+  neta_id integer [primary key]
+  neta_name varchar
+  neta_price integer
+  stok_flag boolean      // 1:在庫あり  2:在庫切れ
+  created_at timestamp 
+}
+
+// セットメニューマスタ
+Table M_SET_MENU {
+  set_id integer [primary key]
+  set_name varchar
+  set_discription varchar
+  neta_id integer [primary key]
+  neta_counts integer
+  set_price integer
+  stok_flag boolean      // 1:在庫あり  2:在庫切れ
+  created_at timestamp 
+}
+
+// 利用者マスタ
+Table M_USERS {
+  user_id integer [primary key]
+  user_name varchar
+  role integer           // 1:管理者  2:店員  3:お客さん
+  tel_no char
+  email varchar
+  address varchar
+  created_at timestamp
+}
+
+// 注文履歴テーブル
+Table T_ORDER_HISTORY {
+  order_id integer [primary key]
+  user_id varchar
+  order_date date
+  total_price integer
+  total_counts integer
+  pay_status integer    // 1:済  2:未
+  created_at timestamp
+}
+
+// 注文詳細テーブル
+Table T_ORDER_DETAIL {
+  order_detail_id integer [primary key]
+  order_id integer
+  neta_id integer
+  set_id integer
+  unit_price integer
+  quantity integer
+  sabi integer        // 1:わさびあり  2:わさびぬき
+  created_at timestamp
+}
+
+
+
+
+Ref: "M_SET_MENU"."neta_id" > "M_TANPIN_MENU"."neta_id"
+
+Ref: "T_ORDER_HISTORY"."order_id" < "T_ORDER_DETAIL"."order_id"
+
+
+Ref: "T_ORDER_HISTORY"."user_id" > "M_USERS"."user_id"
+
+Ref: "M_SET_MENU"."set_id" < "T_ORDER_DETAIL"."set_id"
+
+Ref: "M_TANPIN_MENU"."neta_id" < "T_ORDER_DETAIL"."neta_id"
